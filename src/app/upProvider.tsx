@@ -41,7 +41,6 @@ const UpContext = createContext<UpProviderContext | undefined>(undefined);
 
 const provider = typeof window !== "undefined" ? createClientUPProvider() : null;
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useUpProvider() {
   const context = useContext(UpContext);
   if (!context) {
