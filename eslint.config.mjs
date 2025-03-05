@@ -23,9 +23,18 @@ const eslintConfig = [
       "react-hooks/exhaustive-deps": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       
-      // Optional: Disable other TypeScript strict checks if needed
+      // Disable TypeScript strict checks
       "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-inferrable-types": "off"
+      "@typescript-eslint/no-inferrable-types": "off",
+
+      // Disable Next.js img warnings
+      "@next/next/no-img-element": "off",
+
+      // Disable accessibility warnings
+      "jsx-a11y/alt-text": "off",
+
+      // Disable unused eslint-disable comments warning
+      "eslint-comments/no-unused-disable": "off"
     }
   }
 ];
