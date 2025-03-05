@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
@@ -23,27 +23,17 @@ declare module "next-auth" {
 
 export default function AuthenticatedX() {
   const { data: session, status } = useSession();
-  const router = useRouter();
+  const searchParams = useSearchParams();
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Function to close the popup and notify parent window
-  const closePopupWithSuccess = () => {
-    // Notify parent window of successful connection if possible
-    if (window.opener && typeof window.opener.twitterLinkSuccess === 'function') {
-      window.opener.twitterLinkSuccess();
-    }
-    
-    // Close the popup
-    window.close();
-  };
+  // Get wallet address from URL params instead of parent window
+  const walletAddress = searchParams.get('wallet');
 
-  // Save Twitter data to Firebase when session is available
   useEffect(() => {
     const saveTwitterData = async () => {
-      // Only proceed if we have session data and haven't started saving yet
-      if (status !== "authenticated" || !session?.user || saving || saveSuccess) {
+      if (status !== "authenticated" || !session?.user || saving || saveSuccess || !walletAddress) {
         return;
       }
 
@@ -51,23 +41,6 @@ export default function AuthenticatedX() {
         setSaving(true);
         setSaveError(null);
 
-        // Get wallet address from parent window
-        if (!window.opener || !window.opener.contextAccounts || window.opener.contextAccounts.length === 0) {
-          throw new Error("No wallet address available. Make sure you're connecting from the main page.");
-        }
-
-        const walletAddress = window.opener.contextAccounts[0];
-        
-        // Log the data we're about to send
-        console.log("Saving Twitter data:", {
-          walletAddress,
-          twitterId: session.user.id,
-          twitterUsername: session.user.name,
-          twitterHandle: session.user.twitterHandle,
-          twitterImage: session.user.image
-        });
-
-        // Call the API to save Twitter data
         const response = await fetch('/api/save-twitter', {
           method: 'POST',
           headers: {
@@ -89,13 +62,13 @@ export default function AuthenticatedX() {
           throw new Error(result.error || 'Failed to save Twitter data');
         }
 
-        // Set success state
         setSaveSuccess(true);
         
-        // Notify parent window immediately
-        if (window.opener && typeof window.opener.twitterLinkSuccess === 'function') {
-          window.opener.twitterLinkSuccess();
-        }
+        // Close window after successful save
+        setTimeout(() => {
+          window.close();
+        }, 2000);
+
       } catch (error) {
         console.error("Error saving Twitter data:", error);
         setSaveError(error instanceof Error ? error.message : 'Failed to save Twitter data');
@@ -105,7 +78,7 @@ export default function AuthenticatedX() {
     };
 
     saveTwitterData();
-  }, [session, status, saving, saveSuccess]);
+  }, [session, status, saving, saveSuccess, walletAddress]);
 
   // Render loading state
   if (status === "loading" || saving) {
@@ -192,7 +165,7 @@ export default function AuthenticatedX() {
           </p>
           
           <Button 
-            onClick={closePopupWithSuccess} 
+            onClick={() => window.close()} 
             variant="default" 
             className="w-full transition hover:cursor-pointer"
           >

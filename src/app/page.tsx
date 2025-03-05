@@ -288,44 +288,28 @@ export default function Home() {
     setTwitterAuthLoading(true);
     setError(null);
     
-    // Make wallet address available to the popup window
-    if (contextAccounts && contextAccounts.length > 0) {
-      // Expose the wallet address to be accessible by the popup
-      window.contextAccounts = contextAccounts;
-    } else {
-      setError("No wallet address available. Please connect your wallet first.");
-      setTwitterAuthLoading(false);
-      return;
-    }
-    
     // Open Twitter auth in a new window
     const width = 600;
     const height = 600;
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
     
-    // Use the direct Twitter auth endpoint
-    const authUrl = `/api/auth/signin/twitter?callbackUrl=${encodeURIComponent('/auth/callback')}`;
+    // Include the wallet address as a query parameter
+    const walletAddress = contextAccounts?.[0] || '';
+    const authUrl = `/api/auth/signin/twitter?callbackUrl=${encodeURIComponent('/auth/callback')}&wallet=${encodeURIComponent(walletAddress)}`;
     
-    const popupWindow = window.open(
+    window.open(
       authUrl,
       'Twitter Authentication',
       `width=${width},height=${height},left=${left},top=${top}`
     );
-    
-    // Check if popup was blocked
-    if (!popupWindow || popupWindow.closed || typeof popupWindow.closed === 'undefined') {
-      setError("Popup blocked! Please allow popups for this site and try again.");
+
+    // Reset loading state after a reasonable time
+    setTimeout(() => {
       setTwitterAuthLoading(false);
-      
-      // Fallback: provide a direct link
-      console.log("Popup blocked, providing fallback link");
-    } else {
-      // Reset loading state after a reasonable time
-      setTimeout(() => {
-        setTwitterAuthLoading(false);
-      }, 5000); // Reset after 5 seconds, assuming user is handling the popup
-    }
+      // Refresh the user document after a delay to check for updates
+      setTimeout(fetchUserDocument, 10000);
+    }, 1000);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -1382,7 +1366,7 @@ export default function Home() {
           <CardFooter className="flex h-full flex-col gap-3">
             {isGridOwner ? (
               // Grid owner UI
-              <div className="w-full flex h-full flex-col gap-3">
+              <div className="w-full flex h-full flex-col justify-center items-center gap-3">
                 {renderTwitterStatus()}
                 
                 {error && error.includes("Popup blocked") && (
