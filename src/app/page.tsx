@@ -536,7 +536,7 @@ export default function Home() {
                           <div className="bg-gray-200 p-3 rounded-lg"> 
                             {/* Roast text with padding to avoid overlapping with quote marks */}
                             <p className="text-sm text-[#281f20] whitespace-pre-wrap z-10 px-4">
-                              "{viewingRoast.description}"
+                              {viewingRoast.description}
                             </p>
                           </div>
                         </div>
@@ -1101,7 +1101,7 @@ export default function Home() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3, delay: 0.2 }}
                 >
-                  AI roasts are generated based on user's Universal Profile and X account history.
+                  AI roasts are generated based on users Universal Profile and X account history.
                 </motion.p>
               </div>
             )}
