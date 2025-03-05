@@ -25,8 +25,7 @@ const eslintConfig = [
       
       // Optional: Disable other TypeScript strict checks if needed
       "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-inferrable-types": "off",
-      "react-refresh/only-export-components": "warn"
+      "@typescript-eslint/no-inferrable-types": "off"
     }
   }
 ];
