@@ -88,7 +88,7 @@ export const GridOwnerProvider = ({ children }: { children: ReactNode }) => {
       const priceWei = priceResult.toString() === '0x' ? ethers.parseEther("0") : priceResult;
 
       const balance = luksoPrice * Number(ethers.formatEther(balanceWei));
-      const price = luksoPrice * Number(ethers.formatEther(priceWei));
+      const price = /*luksoPrice */ Number(ethers.formatEther(priceWei));
 
       setContractBalance(balance);
       setPricePerRoast(price);

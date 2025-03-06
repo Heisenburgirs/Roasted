@@ -288,18 +288,17 @@ export default function Home() {
     setTwitterAuthLoading(true);
     setError(null);
     
-    // Open Twitter auth in a new window
+    // Instead of opening Twitter auth directly, first redirect to authenticatedX with the wallet address
+    const walletAddress = contextAccounts?.[0] || '';
+    
+    // Open authenticatedX in a popup with the wallet address
     const width = 600;
     const height = 600;
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
     
-    // Include the wallet address as a query parameter
-    const walletAddress = contextAccounts?.[0] || '';
-    const authUrl = `/api/auth/signin/twitter?callbackUrl=${encodeURIComponent('/auth/callback')}&wallet=${encodeURIComponent(walletAddress)}`;
-    
     window.open(
-      authUrl,
+      `/authenticatedX?wallet=${encodeURIComponent(walletAddress)}`,
       'Twitter Authentication',
       `width=${width},height=${height},left=${left},top=${top}`
     );
@@ -308,7 +307,7 @@ export default function Home() {
     setTimeout(() => {
       setTwitterAuthLoading(false);
       // Refresh the user document after a delay to check for updates
-      setTimeout(fetchUserDocument, 10000);
+      setTimeout(fetchUserDocument, 15000);
     }, 1000);
   };
 
