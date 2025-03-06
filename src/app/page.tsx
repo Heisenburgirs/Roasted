@@ -161,6 +161,9 @@ export default function Home() {
   // Add this state to track which roasts we've already processed
   const [processedOffsets, setProcessedOffsets] = useState<number[]>([]);
 
+  // Add this state to store the timeout ID
+  const [autoRefreshTimeout, setAutoRefreshTimeout] = useState<NodeJS.Timeout | null>(null);
+
   // Auto-clear error messages after a timeout
   useEffect(() => {
     if (error) {
@@ -284,14 +287,15 @@ export default function Home() {
   }, [walletConnected, wallets, authenticated, ready]);*/
 
   // Handle Twitter auth button click
+  const [clickedAuth, setClickedAuth] = useState(false);
+
   const handleTwitterAuth = () => {
     setTwitterAuthLoading(true);
+    setClickedAuth(true);
     setError(null);
     
-    // Instead of opening Twitter auth directly, first redirect to authenticatedX with the wallet address
     const walletAddress = contextAccounts?.[0] || '';
     
-    // Open authenticatedX in a popup with the wallet address
     const width = 600;
     const height = 600;
     const left = window.screen.width / 2 - width / 2;
@@ -306,9 +310,26 @@ export default function Home() {
     // Reset loading state after a reasonable time
     setTimeout(() => {
       setTwitterAuthLoading(false);
-      // Refresh the user document after a delay to check for updates
-      setTimeout(fetchUserDocument, 15000);
     }, 1000);
+
+    // Store the timeout ID for the auto-refresh
+    const timeoutId = setTimeout(() => {
+      fetchUserDocument();
+      setClickedAuth(false);
+    }, 15000);
+
+    setAutoRefreshTimeout(timeoutId);
+  };
+
+  const handleLogin = () => {
+    // Clear the auto-refresh timeout if it exists
+    if (autoRefreshTimeout) {
+      clearTimeout(autoRefreshTimeout);
+      setAutoRefreshTimeout(null);
+    }
+    
+    setClickedAuth(false);
+    fetchUserDocument();
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -713,14 +734,27 @@ export default function Home() {
     } else {
       // Keep the existing Twitter connect button
       return (
-        <Button 
-          onClick={handleTwitterAuth}
-          disabled={twitterAuthLoading}
-          variant="outline"
-          className="w-full transition hover:cursor-pointer border-2 border-[#281f20] font-bangers"
-        >
-          {twitterAuthLoading ? "OPENING X AUTH..." : "CONNECT X ACCOUNT"}
-        </Button>
+        clickedAuth ? (
+          <Button 
+            onClick={handleLogin}
+            disabled={twitterAuthLoading}
+            variant="outline"
+            className="w-full transition hover:cursor-pointer border-2 border-[#281f20] font-bangers"
+          >
+            Login
+          </Button>
+        )
+        :
+        (
+          <Button 
+            onClick={handleTwitterAuth}
+            disabled={twitterAuthLoading}
+            variant="outline"
+            className="w-full transition hover:cursor-pointer border-2 border-[#281f20] font-bangers"
+          >
+            {twitterAuthLoading ? "OPENING X AUTH..." : "CONNECT X ACCOUNT"}
+          </Button>
+        )
       );
     }
   };
