@@ -37,7 +37,7 @@ export const RoastProvider = ({ children }: { children: ReactNode }) => {
       console.log(`Fetching roast price for address: ${address}`);
       
       // Setup provider and contract
-      const provider = new ethers.JsonRpcProvider('https://lukso.nownodes.io/3eae6d25-6bbb-4de1-a684-9f40dcc3f793');
+      const provider = new ethers.JsonRpcProvider('https://42.rpc.thirdweb.com');
       const roastedContract = new ethers.Contract(
         ROASTADDRESS,
         Roasted,
