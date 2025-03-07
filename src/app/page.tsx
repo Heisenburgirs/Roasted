@@ -1315,6 +1315,7 @@ export default function Home() {
       console.log(mintData, "mint data");
       console.log(accounts[0], "account");
       console.log(ROASTADDRESS, "roast address");
+      console.log(ethers.parseEther(targetRoastPrice), "target roast price");
 
       // Call the mint function
       const txHash = await client?.writeContract({
