@@ -480,7 +480,7 @@ export default function Home() {
                       onClick={() => setViewingRoast(null)}
                       variant="ghost"
                       size="sm"
-                      className={`${viewingRoast ? "block" : "invisible"} p-0 h-8 w-8 hover:bg-transparent hover:cursor-pointer hover:bg-gray-100 transition `}
+                      className={`${viewingRoast ? "block" : "invisible"} p-0 h-8 w-8 text-[#ef1a22] hover:bg-transparent hover:cursor-pointer hover:bg-gray-100 transition `}
                     >
                       Back
                     </Button>
@@ -855,7 +855,7 @@ export default function Home() {
               transition={{ duration: 0.3 }}
             >
               <Textarea
-                placeholder={`Roast ${profileName} here...`}
+                placeholder={`Write your custom roast here...`}
                 className="min-h-[120px]"
                 value={customRoast}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCustomRoast(e.target.value)}
