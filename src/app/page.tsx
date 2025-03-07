@@ -164,6 +164,12 @@ export default function Home() {
   // Add this state to store the timeout ID
   const [autoRefreshTimeout, setAutoRefreshTimeout] = useState<NodeJS.Timeout | null>(null);
 
+  // Add these new states at the top with other states
+  const [successData, setSuccessData] = useState<{
+    roastText: string;
+    twitterHandle: string;
+  } | null>(null);
+
   // Auto-clear error messages after a timeout
   useEffect(() => {
     if (error) {
@@ -1010,30 +1016,22 @@ export default function Home() {
             >
               <Button 
                 onClick={() => {
-                  // Create share text based on whether it was a custom or AI roast
-                  const roastText = customRoast || aiRoast;
-                  const shareText = `I just roasted someone onchain! #roasted 🔥\n\nGet paid for your best roasts at https://universaleverything.io/0x87621111d4810ea9b56bd87b79421919cacca39e?assetGroup=grid`;
+                  if (!successData) return;
                   
-                  // Encode the text for URL
+                  const shareText = `I just roasted ${successData.twitterHandle} onchain! #roasted 🔥\n\n"${successData.roastText}"\n\nGet paid for your best roasts at https://universaleverything.io/0x87621111d4810ea9b56bd87b79421919cacca39e?assetGroup=grid`;
                   const encodedText = encodeURIComponent(shareText);
-                  
-                  // Open Twitter share dialog
                   window.open(`https://twitter.com/intent/tweet?text=${encodedText}`, '_blank');
                 }}
                 className="w-full bg-[#fffc03] hover:bg-[#fffc03] opacity-90 hover:opacity-100 text-black font-bangers transition hover:cursor-pointer transform shadow-lg border-2 border-[#281f20]"
+                disabled={!successData}
               >
                 Share your Roast on <span className="mr-2">𝕏</span>
               </Button>
 
               <Button 
                 onClick={() => {
-                  // Reset all roast inputs
-                  setCustomRoast("");
-                  setAiRoast("");
-                  setAiContext("");
-                  setIsRoastGenerating(false);
-                  setAiSuggestion(true);
-                  // Return to initial state
+                  // Clear success data when starting over
+                  setSuccessData(null);
                   setRoastStep("initial");
                 }}
                 variant="outline"
@@ -1352,6 +1350,12 @@ export default function Home() {
         position: "bottom-center",
       });
 
+      // Store the success data before resetting states
+      setSuccessData({
+        roastText: roastText,
+        twitterHandle: userDocument?.twitterHandle || ''
+      });
+
       setRoastStep("success");
 
       // Reset UI state
@@ -1360,6 +1364,7 @@ export default function Home() {
       setAiContext("");
       setIsRoastGenerating(false);
       setAiSuggestion(true);
+
     } catch (error) {
       console.error("Error minting roast:", error);
       toast.error("Failed to mint roast", {
