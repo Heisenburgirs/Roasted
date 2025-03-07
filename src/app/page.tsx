@@ -1012,7 +1012,7 @@ export default function Home() {
                 onClick={() => {
                   // Create share text based on whether it was a custom or AI roast
                   const roastText = customRoast || aiRoast;
-                  const shareText = `I just roasted someone Onchain! #roasted 🔥\n\n"${roastText.substring(0, 150)}${roastText.length > 150 ? '...' : ''}"\n\nGet paid for your best roasts at roasted.xyz`;
+                  const shareText = `I just roasted someone onchain! #roasted 🔥\n\nGet paid for your best roasts at https://universaleverything.io/0x87621111d4810ea9b56bd87b79421919cacca39e?assetGroup=grid`;
                   
                   // Encode the text for URL
                   const encodedText = encodeURIComponent(shareText);
