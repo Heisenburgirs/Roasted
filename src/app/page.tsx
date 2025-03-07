@@ -473,9 +473,9 @@ export default function Home() {
                 </div>
 
                 {/* Roasts Table */}
-                <div className="bg-white rounded-lg p-3 border-2 border-[#281f20] shadow-md h-[275px] overflow-hidden">
-                  <div className="flex items-center justify-between mb-3 border-b-2 border-[#281f20] pb-2 sticky top-0 bg-white">
-                    <h3 className="font-bangers text-[#281f20]">ROASTS</h3>
+                <div className="bg-white rounded-lg border-2 border-[#281f20] shadow-md h-[300px] overflow-y-auto">
+                  <div className="flex items-center justify-between mb-3 border-b-2 border-[#281f20] sticky top-0 bg-white">
+                    <h3 className="font-bangers text-[#281f20] px-3">ROASTS</h3>
                     <Button 
                       onClick={() => setViewingRoast(null)}
                       variant="ghost"
@@ -486,7 +486,7 @@ export default function Home() {
                     </Button>
                   </div>
                   
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto p-3">
                     {!viewingRoast ? (
                       // List View
                       <table className="w-full">
